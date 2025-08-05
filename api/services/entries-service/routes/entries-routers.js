@@ -13,9 +13,10 @@ const controllerName = filename.split('.')[0];
 const Controller = require(`../controllers/${controllerName}`);
 
 // routes
-//router.post('/upload-file', upload.single('file'), Controller.UploadFile);
-//router.post('/entries-create', Controller.entriesCreate);
 
 router.post('/entries-create', Controller.entriesCreate);
+router.get('/', Controller.getEntries);
+router.put('/entries-update', Controller.updateEntries);
+router.delete('/entries-deleted', Controller.deleteEntries);
 
 module.exports = router;

@@ -48,4 +48,76 @@ const entriesCreate = async (req, res) => {
   }
 };
 
-module.exports = { entriesCreate };
+const getEntries = async (req, res) => {
+  try {
+    const entriesData = await entries.findAll({ where: { isDeleted: false } });
+    if (!entriesData) {
+      return res.status(404).json({ message: 'No entries found' });
+    }
+    res.status(200).json({
+      message: 'Entries retrieved successfully',
+      entries: entriesData,
+    });
+  } catch (error) {
+    logger.error(await loggerErrKey(req, error.message));
+    return res
+      .status(500)
+      .json({ message: `get-entries failed: ${error.message}` });
+  }
+};
+
+const updateEntries = async (req, res) => {
+  try {
+    const { id, name, email, age, phone, department } = req.body;
+
+    if (!name || !email || !age || !phone || !department) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    const entryData = await entries.findByPk(id);
+    if (!entryData) {
+      return res.status(404).json({ message: 'Entry not found' });
+    }
+
+    await entryData.update({
+      name,
+      email,
+      age,
+      phone,
+      department,
+    });
+
+    res.json({ message: 'Entry updated successfully', entryData });
+  } catch (error) {
+    logger.error(await loggerErrKey(req, error.message));
+    return res
+      .status(500)
+      .json({ message: `update-entries failed: ${error.message}` });
+  }
+};
+
+const deleteEntries = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: 'ID is required' });
+    }
+
+    const entryData = await entries.findByPk(id);
+    if (!entryData) {
+      return res.status(404).json({ message: 'Entry not found' });
+    }
+
+    await entryData.update({ isDeleted: true });
+
+    res.json({ message: 'Entry deleted successfully' });
+  } catch (error) {
+    logger.error(await loggerErrKey(req, error.message));
+    return res
+      .status(500)
+      .json({ message: `delete-entries failed: ${error.message}` });
+  }
+};
+
+module.exports = { entriesCreate, getEntries, updateEntries, deleteEntries };
