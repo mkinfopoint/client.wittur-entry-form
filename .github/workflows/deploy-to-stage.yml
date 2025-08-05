@@ -1,0 +1,51 @@
+name: Build and Deploy to Stage
+
+on:
+  pull_request:
+    branches: ['stage']
+    types: [closed]
+
+jobs:
+  build-and-deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '23'
+          cache: 'yarn'
+          cache-dependency-path: ui/yarn.lock
+
+      - name: Restore Next.js Cache
+        uses: actions/cache@v3
+        with:
+          path: ui/.next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('ui/yarn.lock') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-
+
+      - name: Install Dependencies
+        run: yarn
+        working-directory: ui
+
+      - name: Build the App
+        run: yarn build
+        working-directory: ui
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          CI: false
+
+      - name: Upload Web App to Server
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ui/out/
+          server-dir: /
+          log-level: verbose
