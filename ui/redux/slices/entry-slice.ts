@@ -12,50 +12,50 @@ import { apiSlice } from '.';
 //   }));
 // }
 
-export const formSlice = apiSlice.injectEndpoints({
+export const entrySlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getForm: builder.query({
-      query: () => 'form/form-get',
+    getEntry: builder.query({
+      query: () => 'entries-router',
       transformResponse: (response: any) => {
         // return parseOptions(response.data);
-        return response.data;
+        return response.entries;
       },
-      providesTags: ['Form'],
+      providesTags: ['Entry'],
     }),
 
-    addForm: builder.mutation({
+    addEntry: builder.mutation({
       query: (data) => ({
-        url: 'form/form-create',
+        url: 'entries-router/entries-create',
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Form'],
+      invalidatesTags: ['Entry'],
     }),
 
-    updateForm: builder.mutation({
+    updateEntry: builder.mutation({
       query: (data) => ({
         url: '/wallet/template/update',
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: ['Form'],
+      invalidatesTags: ['Entry'],
     }),
 
-    deleteForm: builder.mutation({
+    deleteEntry: builder.mutation({
       query: (data) => ({
         url: '/wallet/template/delete',
         method: 'DELETE',
         body: data,
       }),
-      invalidatesTags: ['Form'],
+      invalidatesTags: ['Entry'],
     }),
   }),
   overrideExisting: true,
 });
 
 export const {
-  useGetFormQuery,
-  useAddFormMutation,
-  useUpdateFormMutation,
-  useDeleteFormMutation,
-} = formSlice;
+  useGetEntryQuery,
+  useAddEntryMutation,
+  useUpdateEntryMutation,
+  useDeleteEntryMutation,
+} = entrySlice;

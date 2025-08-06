@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Dynamic Form Creation',
+  title: 'Gate-pass Form',
   description: 'Developing by MKINFOPOINT',
 };
 
