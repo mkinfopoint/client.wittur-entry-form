@@ -21,6 +21,8 @@ const allowedOrigins = [
   // here your allowed origins
   'http://localhost:3000',
   'https://your-allowed-origin.com',
+  'http://witturgatepass.mkinfopoint.com',
+  'https://witturgatepass.mkinfopoint.com'
 ];
 
 // === Socket.io Setup ===
